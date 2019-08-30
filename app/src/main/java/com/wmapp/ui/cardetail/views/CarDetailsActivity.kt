@@ -13,6 +13,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_cardetails.*
 import javax.inject.Inject
 
+/**
+ * Represents details of car with attributes.
+ * Initiates network call. Processes data with image.
+ *
+ */
 class CarDetailsActivity : BaseActivity(){
 
     @Inject

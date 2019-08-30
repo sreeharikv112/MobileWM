@@ -1,5 +1,8 @@
 package com.wmapp.networking
 
+/**
+ * Common data wrapper class for handling multiple responses.
+ */
 class CommonDataWrapper<T> {
     var dataStatus : DataStatus
     var data: T?

@@ -12,9 +12,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
+/**
+ * Handles multiple network requests.
+ * Uses coroutines.
+ * Coroutines can be replaced with RxAndroid as well.
+ */
 class NetworkProcessor (var networkService: NetworkService ){
 
     val mTag = NetworkProcessor::class.java.simpleName
+
 
     fun getRemoteData() : CommonLiveData<ArrayList<CarsFeed>> {
 
@@ -80,7 +86,6 @@ class NetworkProcessor (var networkService: NetworkService ){
         CoroutineScope(Dispatchers.IO).launch {
 
             val response = networkService.bookCarRequest(AppConstants.BOOK_URL,
-
                 AppConstants.AUTHORIZATION,
                 bookCar
                 )

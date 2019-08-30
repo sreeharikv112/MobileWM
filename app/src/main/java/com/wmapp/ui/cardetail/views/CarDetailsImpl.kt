@@ -1,5 +1,6 @@
 package com.wmapp.ui.cardetail.views
 
+import android.content.Context
 import android.content.DialogInterface
 import android.text.TextUtils
 import android.view.View
@@ -21,11 +22,16 @@ import com.wmapp.ui.cardetail.models.CarDetails
 import com.wmapp.ui.cardetail.viewmodels.CarDetailViewModel
 import com.wmapp.ui.utility.CarDetailAdapter
 
+/**
+ * Handles car details functional flow.
+ * Initiates rest call, listens to the data update using ViewModel.
+ * Handles car booking request.
+ */
 class CarDetailsImpl(
     val context: CarDetailsActivity,
     val mNetwork: NetworkProcessor,
     val carId: Int
-) : View.OnClickListener{
+) : View.OnClickListener {
 
     private var mCarsDetailVM: CarDetailViewModel? = null
     private val mTag = CarDetailsImpl::class.java.simpleName
@@ -33,7 +39,7 @@ class CarDetailsImpl(
     private var mRecyclerView: RecyclerView
     private var mCardDetailAdapter: CarDetailAdapter
     private var mCarDetailVM: CarDetailViewModel
-    private var mBookButton : MaterialButton
+    private var mBookButton: MaterialButton
     var mImageView: ImageView
     var mIsDataLoaded = false
     var mCurrentCarID = -1
@@ -58,16 +64,19 @@ class CarDetailsImpl(
     private fun retrieveData() {
         context.logD(mTag, "retrieveData")
         mCarsDetailVM!!.getCarDetails(carId, mNetwork).observe(context, Observer { data ->
-            //Set shared list data in Base
+
+            mProgressBar.visibility = View.INVISIBLE
             when (data.dataStatus) {
                 DataStatus.SUCCESS -> {
-                    context.logD(mTag, "DATA SUCCESS")
-                    context.logD(mTag, "data ===  ${data.data!!}")
 
-                    var carDetails = data.data as CarDetails
-
-                    context.logD(mTag, "carDetails.address === ${carDetails.address}")
-                    context.logD(mTag, "carDetails.city === ${carDetails.city}")
+                    try {
+                        val inputData = data.data as CarDetails
+                        val lisItem = ArrayList<CarDetailGridItem>()
+                        populateCarDetail(lisItem, inputData)
+                    } catch (e: Exception) {
+                        context.showToast("Sorry! Not able to find details of car")
+                        context.logE(mTag, "EX === ${e.toString()}")
+                    }
                 }
                 DataStatus.NETWORK_ERROR -> {
                     context.logD(mTag, "NETWORK_ERROR")
@@ -79,68 +88,44 @@ class CarDetailsImpl(
                 }
             }
         })
-
-        mCarDetailVM.mCarDetailResponse!!.observe(context, Observer { dataModel ->
-            mProgressBar.visibility = View.INVISIBLE
-            try {
-                val inputData = dataModel.data as CarDetails
-                var lisItem = ArrayList<CarDetailGridItem>()
-                populateCarDetail(lisItem, inputData)
-            } catch (e: Exception) {
-                context.showToast("Sorry! Not able to find details of car")
-                context.logE(mTag, "EX === ${e.toString()}")
-            }
-        })
     }
 
     private fun bookCar() {
-            mProgressBar.visibility = View.VISIBLE
-            context.logD(mTag, "retrieveData")
-            mCarsDetailVM!!.bookCarDetails(carId, mNetwork).observe(context, Observer { data ->
-                //Set shared list data in Base
-                mProgressBar.visibility = View.INVISIBLE
-                when (data.dataStatus) {
+        mProgressBar.visibility = View.VISIBLE
+        context.logD(mTag, "retrieveData")
+        mCarsDetailVM!!.bookCarDetails(carId, mNetwork).observe(context, Observer { data ->
+            mProgressBar.visibility = View.INVISIBLE
+            when (data.dataStatus) {
 
-                    DataStatus.SUCCESS -> {
-                        context.logD(mTag, "DATA SUCCESS")
-                        context.logD(mTag, "data ===  ${data.data!!}")
+                DataStatus.SUCCESS -> {
+                    try {
+                        val carBookedDetails = data.data as BookedResponse
+                        val carReservationID = carBookedDetails.reservationId
+                        val startAddress = carBookedDetails.startAddress
 
-                        var carDetails = data.data as BookedResponse
+                        context.showAlert("Vehicle Booked with Reservation $carReservationID and start address " +
+                                "" +
+                                "is $startAddress", R.string.ok,
+                            DialogInterface.OnClickListener { dialog, which ->
+                                context.onSupportNavigateUp()
+                            }
+                        )
 
-                        context.logD(mTag, "carDetails.address === ${carDetails.reservationId}")
-                        context.logD(mTag, "carDetails.city === ${carDetails.startAddress}")
-                    }
-                    DataStatus.NETWORK_ERROR -> {
-                        context.logD(mTag, "NETWORK_ERROR")
-                        context.showAlert(R.string.lost_connection, R.string.ok)
-                    }
-                    DataStatus.END_POINT_ERROR -> {
-                        context.logD(mTag, "END_POINT_ERROR")
-                        context.showAlert(R.string.data_processing_error, R.string.ok)
+                    } catch (e: Exception) {
+                        context.showToast("Sorry! Not able to process booking of vehicle")
+                        context.logE(mTag, "EX === ${e.toString()}")
                     }
                 }
-            })
-
-            mCarDetailVM.mBookedResponse!!.observe(context, Observer { dataModel ->
-
-                try {
-                    val carBookedDetails = dataModel.data as BookedResponse
-                    val carReservationID = carBookedDetails.reservationId
-                    val startAddress = carBookedDetails.startAddress
-
-                    context.showAlert("Vehicle Booked with Reservation $carReservationID and start address " +
-                            "" +
-                            "is $startAddress", R.string.ok,
-                        DialogInterface.OnClickListener { dialog, which ->
-                            context.onSupportNavigateUp()
-                        }
-                    )
-
-                } catch (e: Exception) {
-                    context.showToast("Sorry! Not able to process booking of vehicle")
-                    context.logE(mTag, "EX === ${e.toString()}")
+                DataStatus.NETWORK_ERROR -> {
+                    context.logD(mTag, "NETWORK_ERROR")
+                    context.showAlert(R.string.lost_connection, R.string.ok)
                 }
-            })
+                DataStatus.END_POINT_ERROR -> {
+                    context.logD(mTag, "END_POINT_ERROR")
+                    context.showAlert(R.string.data_processing_error, R.string.ok)
+                }
+            }
+        })
     }
 
     private fun populateCarDetail(lisItem: ArrayList<CarDetailGridItem>, inputData: CarDetails) {
@@ -150,11 +135,36 @@ class CarDetailsImpl(
                 if (TextUtils.isEmpty(inputData.title)) " " else inputData.title
             )
         )
-        lisItem.add(CarDetailGridItem(context.getString(R.string.licence_plate), inputData.licencePlate))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.vehicle_state_id), inputData.vehicleStateId.toString()))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.hardware_id), inputData.hardwareId))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.pricing_time), inputData.pricingTime))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.pricing_parking), inputData.pricingParking))
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.licence_plate),
+                inputData.licencePlate
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.vehicle_state_id),
+                inputData.vehicleStateId.toString()
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.hardware_id),
+                inputData.hardwareId
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.pricing_time),
+                inputData.pricingTime
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.pricing_parking),
+                inputData.pricingParking
+            )
+        )
         lisItem.add(CarDetailGridItem(context.getString(R.string.address), inputData.address))
         lisItem.add(CarDetailGridItem(context.getString(R.string.zipcode), inputData.zipCode))
         lisItem.add(CarDetailGridItem(context.getString(R.string.city), inputData.city))
@@ -165,9 +175,24 @@ class CarDetailsImpl(
                 if (inputData.reservationState == 0) "Not Reserved" else "Reserved"
             )
         )
-        lisItem.add(CarDetailGridItem(context.getString(R.string.damage_desc), inputData.damageDescription))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.is_clean), if (inputData.isClean) "YES" else "NO"))
-        lisItem.add(CarDetailGridItem(context.getString(R.string.is_damaged), if (inputData.isDamaged) "YES" else "NO"))
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.damage_desc),
+                inputData.damageDescription
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.is_clean),
+                if (inputData.isClean) "YES" else "NO"
+            )
+        )
+        lisItem.add(
+            CarDetailGridItem(
+                context.getString(R.string.is_damaged),
+                if (inputData.isDamaged) "YES" else "NO"
+            )
+        )
         lisItem.add(
             CarDetailGridItem(
                 "Is Activated By Hardware",
@@ -179,7 +204,7 @@ class CarDetailsImpl(
         mCurrentCarID = inputData.carId
         mBookButton.visibility = View.VISIBLE
         mBookButton.setOnClickListener(this)
-        loadImageURL(inputData.vehicleTypeImageUrl)
+        context.loadImageURL(context,mImageView,inputData.vehicleTypeImageUrl)
     }
 
     override fun onClick(v: View?) {
@@ -190,13 +215,4 @@ class CarDetailsImpl(
         }
     }
 
-    fun loadImageURL(imageURL: String) {
-        val options = RequestOptions().centerCrop()
-        Glide.with(context).load(imageURL)
-
-            .fallback(android.R.drawable.stat_notify_error)
-            .timeout(4500)
-            .apply(options)
-            .into(mImageView)
-    }
 }

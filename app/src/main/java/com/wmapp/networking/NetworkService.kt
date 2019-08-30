@@ -8,6 +8,9 @@ import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.*
 
+/**
+ * Retrofit service for different end points witn input data.
+ */
 interface NetworkService {
     @GET("wunderfleet-recruiting-dev/cars.json")
     suspend fun getAllCarsFeed(): Response<ArrayList<CarsFeed>>

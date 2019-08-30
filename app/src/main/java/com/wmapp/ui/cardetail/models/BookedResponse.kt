@@ -2,6 +2,9 @@ package com.wmapp.ui.cardetail.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+/**
+ * Model for verifying booked response
+ */
 data class BookedResponse(
 
     @JsonProperty("reservationId")

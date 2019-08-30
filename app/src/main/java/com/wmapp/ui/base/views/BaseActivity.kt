@@ -1,13 +1,17 @@
 package com.wmapp.ui.base.views
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.view.Gravity
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wmapp.R
 import com.wmapp.app.WMApplication
@@ -15,6 +19,13 @@ import com.wmapp.dipinjections.components.InjectionSubComponent
 import com.wmapp.ui.base.components.AlertCallBack
 import com.wmapp.ui.base.components.AppLogger
 
+/**
+ * Base activity class for providing required dependencies.
+ * Helps to inject dagger main component for sub classes.
+ * Handles alert messages and call backs.
+ * Provides common logger methods.
+ * Handles image loading with Glide.
+ */
 abstract class BaseActivity : AppCompatActivity(), AppLogger , AlertCallBack {
 
     private var mCallBackAlertDialog: AlertDialog? = null
@@ -71,6 +82,16 @@ abstract class BaseActivity : AppCompatActivity(), AppLogger , AlertCallBack {
             toast.show()
         }
     }
+
+    fun loadImageURL(context: Context, imageView: ImageView, imageURL: String) {
+        val options = RequestOptions().centerCrop()
+        Glide.with(context).load(imageURL)
+            .fallback(android.R.drawable.stat_notify_error)
+            .timeout(4500)
+            .apply(options)
+            .into(imageView)
+    }
+
     override fun negativeAlertCallBack() {
         mCallBackAlertDialog!!.dismiss()
     }
