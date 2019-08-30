@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.cardetail.views.CarDetailsActivity"
+    tools:showIn="@layout/activity_car_details"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/carDetailsRecyclerView"
+                android:layout_marginTop="@dimen/margin_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/progressBar"
+                android:layout_gravity="center_horizontal|center_vertical"
+                />
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10"
+            >
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/carImageView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            />
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnQuickRent"
+                android:text="@string/quick_rent"
+                android:textAllCaps="false"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
