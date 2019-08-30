@@ -44,6 +44,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:contentDescription="@string/available_car_image"
             />
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"

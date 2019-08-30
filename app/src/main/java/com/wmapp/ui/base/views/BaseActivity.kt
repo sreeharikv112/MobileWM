@@ -84,11 +84,9 @@ abstract class BaseActivity : AppCompatActivity(), AppLogger , AlertCallBack {
     }
 
     fun loadImageURL(context: Context, imageView: ImageView, imageURL: String) {
-        val options = RequestOptions().centerCrop()
         Glide.with(context).load(imageURL)
             .fallback(android.R.drawable.stat_notify_error)
             .timeout(4500)
-            .apply(options)
             .into(imageView)
     }
 

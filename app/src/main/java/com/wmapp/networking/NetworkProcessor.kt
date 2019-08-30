@@ -1,64 +1,44 @@
 package com.wmapp.networking
 
-import android.util.Log
 import com.wmapp.common.AppConstants
+import com.wmapp.common.AppConstants.Companion.CAR_BOOK_REQ
+import com.wmapp.common.AppConstants.Companion.CAR_DETAILS_REQ
+import com.wmapp.common.AppConstants.Companion.CAR_FEED_REQ
 import com.wmapp.ui.cardetail.models.BookCar
-import com.wmapp.ui.cardetail.models.BookedResponse
-import com.wmapp.ui.cardetail.models.CarDetails
-import com.wmapp.ui.home.models.CarsFeed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import retrofit2.Response
 
 /**
  * Handles multiple network requests.
  * Uses coroutines.
- * Coroutines can be replaced with RxAndroid as well.
+ * All requests and responses are handled in generic way.
+ * Differentiated by constants and manipulated response accordingly.
  */
-class NetworkProcessor (var networkService: NetworkService ){
+class NetworkProcessor(var networkService: NetworkService) {
 
-    val mTag = NetworkProcessor::class.java.simpleName
+    lateinit var response: Response<*>
 
+    fun getGenericRemoteData(reqNum: Int, carID: Int, bookCar: BookCar?): CommonLiveData<Any> {
 
-    fun getRemoteData() : CommonLiveData<ArrayList<CarsFeed>> {
-
-        var responseData: CommonLiveData<ArrayList<CarsFeed>> =
-            CommonLiveData()
+        var responseData: CommonLiveData<Any> = CommonLiveData()
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            val response = networkService.getAllCarsFeed()
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.isSuccessful) {
-                        responseData.postSuccess(response.body()!!)
-                    } else {
-                        responseData.endPointError(NetworkProcessingError("Unable to process data"))
-                    }
-                } catch (e: HttpException) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() HttpException!!! ${e.toString()}")
-                    responseData.postNetworkError(NetworkProcessingError(e.message()))
-                } catch (e: Throwable) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() Throwable!!! ${e.toString()}")
-                    responseData.postNetworkError(NetworkProcessingError(e.toString()))
-                }
+            when (reqNum) {
+                CAR_FEED_REQ ->
+                    response = networkService.getAllCarsFeed()
+                CAR_DETAILS_REQ ->
+                    response = networkService.getCarsDetails(carID)
+                CAR_BOOK_REQ ->
+                    response = networkService.bookCarRequest(
+                        AppConstants.BOOK_URL,
+                        AppConstants.AUTHORIZATION,
+                        bookCar!!
+                    )
             }
-        }
-        return responseData
-    }
-
-    fun getCarDetailsData(carId: Int) : CommonLiveData<CarDetails> {
-
-        var responseData: CommonLiveData<CarDetails> =
-            CommonLiveData()
-
-        CoroutineScope(Dispatchers.IO).launch {
-
-            val response = networkService.getCarsDetails(carId)
-
             withContext(Dispatchers.Main) {
                 try {
                     if (response.isSuccessful) {
@@ -67,41 +47,8 @@ class NetworkProcessor (var networkService: NetworkService ){
                         responseData.endPointError(NetworkProcessingError("Unable to process data"))
                     }
                 } catch (e: HttpException) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() HttpException!!! ${e.toString()}")
                     responseData.postNetworkError(NetworkProcessingError(e.message()))
                 } catch (e: Throwable) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() Throwable!!! ${e.toString()}")
-                    responseData.postNetworkError(NetworkProcessingError(e.toString()))
-                }
-            }
-        }
-        return responseData
-    }
-
-    fun bookCarDetailsData(bookCar: BookCar) : CommonLiveData<BookedResponse> {
-
-        var responseData: CommonLiveData<BookedResponse> =
-            CommonLiveData()
-
-        CoroutineScope(Dispatchers.IO).launch {
-
-            val response = networkService.bookCarRequest(AppConstants.BOOK_URL,
-                AppConstants.AUTHORIZATION,
-                bookCar
-                )
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.isSuccessful) {
-                        responseData.postSuccess(response.body()!!)
-                    } else {
-                        responseData.endPointError(NetworkProcessingError("Unable to process data"))
-                    }
-                } catch (e: HttpException) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() HttpException!!! ${e.toString()}")
-                    responseData.postNetworkError(NetworkProcessingError(e.message()))
-                } catch (e: Throwable) {
-                    Log.d(mTag, "NetworkProcessor loadMatches() Throwable!!! ${e.toString()}")
                     responseData.postNetworkError(NetworkProcessingError(e.toString()))
                 }
             }

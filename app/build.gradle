@@ -20,8 +20,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         buildConfigField "String", "BASE_URL", "\"https://s3.eu-central-1.amazonaws.com/\""
-        buildConfigField "String", "UN", "\"username\""
-        buildConfigField "String", "PW", "\"password\""
+
     }
     buildTypes {
         release {
@@ -47,7 +46,6 @@ dependencies {
 
     //Network
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rxjava_adapter"
     implementation "com.squareup.okhttp3:logging-interceptor:$http_logging"
@@ -58,6 +56,7 @@ dependencies {
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$couroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$couroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$couroutines_version"
 
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extension"
@@ -77,12 +76,8 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
-    //Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$couroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$couroutines_version"
-
     //Multidex
-    implementation "com.android.support:multidex:$multidex"
+    implementation "androidx.multidex:multidex:$multidex"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
