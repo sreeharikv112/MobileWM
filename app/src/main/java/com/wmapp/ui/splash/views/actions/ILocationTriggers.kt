@@ -1,5 +1,8 @@
 package com.wmapp.ui.splash.views.actions
 
+/**
+ * Call backs for activity life cycle and permission requests.
+ */
 interface ILocationTriggers {
 
     fun actionStart()

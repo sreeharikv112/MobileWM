@@ -5,6 +5,10 @@ import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
+/**
+ * Draws POI with available drawable passed.
+ * Renders based on number of drawables passed.
+ */
 class MultiDrawable(var  mDrawables:List<Drawable>) : Drawable() {
 
     override fun draw(canvas: Canvas) {

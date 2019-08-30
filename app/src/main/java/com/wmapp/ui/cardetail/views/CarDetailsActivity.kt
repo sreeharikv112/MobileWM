@@ -47,7 +47,7 @@ class CarDetailsActivity : BaseActivity(){
     }
 
     override fun initiateDataProcess() {
-        mCarDetailsImpl = CarDetailsImpl(this, mNetwork, mCarID)
+        mCarDetailsImpl = CarDetailsImpl(this, mNetwork, mCarID,mAppUtils)
     }
 
     override fun onSupportNavigateUp(): Boolean {

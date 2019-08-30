@@ -21,6 +21,12 @@ import kotlinx.android.synthetic.main.activity_home.*
 
 import javax.inject.Inject
 
+/**
+ * Displays Google Map with location of all cars.
+ * Initiates location request for displaying users current location.
+ * Handles user input for specific POI's
+ *
+ */
 class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallback {
 
     @Inject
@@ -32,9 +38,8 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
     private lateinit var mLocationListener: ILocationTriggers
     private lateinit var mHomeActivityImpl: HomeActivityImpl
     private val mTag = HomeActivity::class.java.canonicalName
-    lateinit var mMapView: MapView
-    lateinit var mGoogleMap: GoogleMap
-
+    private lateinit var mMapView: MapView
+    private lateinit var mGoogleMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getInjectionComponent().inject(this)
@@ -52,7 +57,7 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
     }
 
     override fun initiateDataProcess() {
-        mHomeActivityImpl = HomeActivityImpl(this, mNetwork)
+        mHomeActivityImpl = HomeActivityImpl(this, mNetwork,mAppUtils)
         try {
             MapsInitializer.initialize(application)
         } catch (e: Exception) {
@@ -72,15 +77,21 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
         mLocationListener.actionPause()
     }
 
+    /**
+     * Receives user location and updates in UI
+     */
     override fun didReceivedLocation(location: Location) {
         logD(mTag, "Location is ${location.latitude} || ${location.longitude}")
         mHomeActivityImpl.showUpdatedLocation(LatLng(location.latitude, location.longitude))
     }
 
-    override fun locaitonUpdationFailure(message: String) {
+    /**
+     * Failure call back for user data
+     */
+    override fun locationUpdationFailure(message: String) {
         showToast(getString(R.string.failed_to_update_location))
         if(!AppConstants.LOCATION_PERMISSION_DENIED)
-        logD(mTag, "!! locaitonUpdationFailure !!")
+        logD(mTag, "!! locationUpdationFailure !!")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -98,6 +109,9 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
         }
     }
 
+    /**
+     * Call back for user's permission
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -108,6 +122,9 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
         }
     }
 
+    /**
+     * Call back when google maps is ready to be populated with data
+     */
     override fun onMapReady(googleMap: GoogleMap?) {
         mGoogleMap = googleMap!!
         mGoogleMap.uiSettings.isMapToolbarEnabled = false

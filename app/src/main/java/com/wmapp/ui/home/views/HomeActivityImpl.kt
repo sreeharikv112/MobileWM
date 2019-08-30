@@ -14,6 +14,7 @@ import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import com.wmapp.R
 import com.wmapp.common.AppConstants
+import com.wmapp.common.AppUtils
 import com.wmapp.networking.DataStatus
 import com.wmapp.networking.NetworkProcessor
 import com.wmapp.ui.cardetail.views.CarDetailsActivity
@@ -22,7 +23,13 @@ import com.wmapp.ui.home.viewmodels.CarsFeedViewModel
 import com.wmapp.ui.utility.AssetRenderer
 import com.wmapp.ui.utility.POIClusterItem
 
-class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcessor) :
+/**
+ * Handles google map POI plotting.
+ * Handles users click on POI.
+ * Plots user's current live location if available.
+ * Navigates to car details screen upon user POI selection.
+ */
+class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcessor,var appUtils : AppUtils) :
 
     ClusterManager.OnClusterClickListener<POIClusterItem>,
     ClusterManager.OnClusterInfoWindowClickListener<POIClusterItem>,
@@ -30,13 +37,13 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
     ClusterManager.OnClusterItemInfoWindowClickListener<POIClusterItem>
 {
     private var mCarsFeedVM : CarsFeedViewModel ? = null
-    val mTag = HomeActivityImpl::class.java.simpleName
-    var mGoogleMap: GoogleMap? = null
-    lateinit var mClusterManager:ClusterManager<POIClusterItem>
-    var mFocusIndex: Int = -1
-    var mCurrentLocMarkerOption : MarkerOptions? = null
-    var mLastAddedMarker : Marker? = null
-    var mClickedPOI = -1
+    private val mTag = HomeActivityImpl::class.java.simpleName
+    private var mGoogleMap: GoogleMap? = null
+    private lateinit var mClusterManager:ClusterManager<POIClusterItem>
+    private var mFocusIndex: Int = -1
+    private var mCurrentLocMarkerOption : MarkerOptions? = null
+    private var mLastAddedMarker : Marker? = null
+    private var mClickedPOI = -1
 
     init {
         context.logD(mTag,"init")
@@ -44,6 +51,10 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         retrieveData()
     }
 
+    /**
+     * Initiates REST call for all car's data.
+     * Listens to view models update.
+     */
     private fun retrieveData() {
 
         mCarsFeedVM!!.getCarsFeedData(mNetwork).observe(context, Observer {
@@ -54,7 +65,6 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
                     context.logD(mTag,"data ===  ${data.data!!}")
 
                     var listOfCars = data.data as ArrayList<CarsFeed>
-
 
                     processClusterData(listOfCars)
                 }
@@ -70,6 +80,12 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         })
     }
 
+    /**
+     * Creates POI cluster with received data.
+     * Attaches listeners for user's click on POI.
+     * Concentrates on specific POI on user click.
+     *
+     */
     private fun processClusterData(listOfCars: ArrayList<CarsFeed>) {
         if(null!=mGoogleMap){
             mClusterManager = ClusterManager(context, mGoogleMap)
@@ -84,28 +100,21 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
 
             for(item in listOfCars){
 
-                var lat = item.lat
-                var lon = item.lon
-                var carID = item.carId
+                val lat = item.lat
+                val lon = item.lon
 
                 if(mFocusIndex ==-1){
                     mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 15f))
                 }
-
-                var title = ""
-                if(TextUtils.isEmpty(item.title)){
-
+                var title = if(TextUtils.isEmpty(item.title)){
                     if(TextUtils.isEmpty(item.licencePlate))
-                        title = item.address
+                        item.address
                     else
-                        title = item.licencePlate
+                        item.licencePlate
+                } else{
+                    item.title
                 }
-                else{
-                    title = item.title
-                }
-
-
-                var clusterItem = POIClusterItem(carID,lat,lon,title, item.address + " "+
+                val clusterItem = POIClusterItem(item.carId,lat,lon,title, item.address + " "+
                         item.city, R.mipmap.car_list_2)
 
                 mClusterManager.addItem(clusterItem)
@@ -114,12 +123,17 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         }
     }
 
-
+    /**
+     * receives Gmap call back from activity
+     */
     fun onActivityMapReady(googleMap: GoogleMap){
         mGoogleMap = googleMap
     }
 
-
+    /**
+     * Handles cluster on click by user.
+     * Manipulates UI based and focus on cluster on user interaction.
+     */
     override fun onClusterClick(cluster: Cluster<POIClusterItem>?): Boolean {
         val builder = LatLngBounds.builder()
         for (item in cluster!!.items) {
@@ -140,6 +154,10 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         context.logD(mTag,"onClusterInfoWindowClick ")
     }
 
+    /**
+     * Handles POI cluster click.
+     * If clicked twice in same POI, user will be navigated to detailed page.
+     */
     override fun onClusterItemClick(item: POIClusterItem?): Boolean {
         context.logD(mTag,"onClusterItemClick ${item?.getID()}")
         if(mClickedPOI ==item!!.getID()){
@@ -149,18 +167,32 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         return false
     }
 
+    /**
+     * Handles POI info window click.
+     * User will be navigated to detailed page.
+     */
     override fun onClusterItemInfoWindowClick(item: POIClusterItem?) {
         context.logD(mTag,"onClusterItemInfoWindowClick ")
         invokeNewActivity(item?.getID())
     }
 
+    /**
+     * Invokes new activity with selected car id.
+     */
     private fun invokeNewActivity(carID : Int?){
-        val intent = Intent(context, CarDetailsActivity::class.java)
-        intent.putExtra(AppConstants.CARID, carID)
-        context.startActivity(intent)
-
+        if(appUtils.isNetworkConnected()){
+            val intent = Intent(context, CarDetailsActivity::class.java)
+            intent.putExtra(AppConstants.CARID, carID)
+            context.startActivity(intent)
+        }
+        else{
+            context.showToast(context.getString(R.string.lost_connection))
+        }
     }
 
+    /**
+     * Updates user's live location with marker.
+     */
     fun showUpdatedLocation(newLoc: LatLng) {
         
         if(mLastAddedMarker != null){

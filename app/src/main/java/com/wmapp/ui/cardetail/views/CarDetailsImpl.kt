@@ -1,6 +1,5 @@
 package com.wmapp.ui.cardetail.views
 
-import android.content.Context
 import android.content.DialogInterface
 import android.text.TextUtils
 import android.view.View
@@ -10,10 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.wmapp.R
+import com.wmapp.common.AppUtils
 import com.wmapp.networking.DataStatus
 import com.wmapp.networking.NetworkProcessor
 import com.wmapp.ui.cardetail.models.BookedResponse
@@ -30,7 +28,8 @@ import com.wmapp.ui.utility.CarDetailAdapter
 class CarDetailsImpl(
     val context: CarDetailsActivity,
     val mNetwork: NetworkProcessor,
-    val carId: Int
+    val carId: Int,
+    val appUtils: AppUtils
 ) : View.OnClickListener {
 
     private var mCarsDetailVM: CarDetailViewModel? = null
@@ -210,7 +209,12 @@ class CarDetailsImpl(
     override fun onClick(v: View?) {
         if (v!!.id == R.id.btnQuickRent) {
             if (mIsDataLoaded && mCurrentCarID != -1) {
-                bookCar()
+                if(appUtils.isNetworkConnected()) {
+                    bookCar()
+                }else{
+                    context.showToast(context.getString(R.string.lost_connection))
+                }
+
             }
         }
     }

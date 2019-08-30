@@ -29,13 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
-    }
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
+
 }
 
 dependencies {
@@ -55,24 +49,19 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    /*implementation "io.reactivex.rxjava2:rxandroid:$rxjava_version"
-    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"*/
     implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rxjava_adapter"
     implementation "com.squareup.okhttp3:logging-interceptor:$http_logging"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.12.0"
 
-    //Lifecycle
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extension"
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_extension"
-
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$couroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$couroutines_version"
 
-    //Databinding
-    kapt "com.android.databinding:compiler:$gradle_version"
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extension"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_extension"
 
     //Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

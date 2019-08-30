@@ -1,5 +1,8 @@
 package com.wmapp.ui.splash.views.actions
 
+/**
+ * Location related invocation and call backs.
+ */
 interface ILocationActions {
 
     fun checkPermissions(): Boolean

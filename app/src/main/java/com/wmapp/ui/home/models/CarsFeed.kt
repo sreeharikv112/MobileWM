@@ -2,6 +2,9 @@ package com.wmapp.ui.home.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+/**
+ * Cars data class
+ */
 data class CarsFeed (
 
     @JsonProperty("carId")

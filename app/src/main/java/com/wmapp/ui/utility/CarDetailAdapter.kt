@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wmapp.R
 import com.wmapp.ui.cardetail.models.CarDetailGridItem
 
+/**
+ * Adapter class for rendering car detail's.
+ *
+ */
 class CarDetailAdapter(var context: Context ,
                        val listItem: List<CarDetailGridItem>
                        ) : RecyclerView.Adapter<CarDetailAdapter.CarDetailViewHolder>(){

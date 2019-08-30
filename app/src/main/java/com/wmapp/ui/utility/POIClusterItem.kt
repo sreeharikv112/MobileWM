@@ -3,6 +3,10 @@ package com.wmapp.ui.utility
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
+/**
+ * Creates cluster item with specifid data.
+ *
+ */
 class POIClusterItem(
                     var selectedID: Int,
                     lat: Double, lon:Double,

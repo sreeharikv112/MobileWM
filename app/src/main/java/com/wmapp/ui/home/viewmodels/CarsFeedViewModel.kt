@@ -5,6 +5,10 @@ import com.wmapp.networking.CommonLiveData
 import com.wmapp.networking.NetworkProcessor
 import com.wmapp.ui.home.models.CarsFeed
 
+/**
+ * View model for cars details.
+ * Requests network data for getting all cars details.
+ */
 class CarsFeedViewModel : ViewModel() {
 
     var mCardFeedData : CommonLiveData<ArrayList<CarsFeed>>? = null

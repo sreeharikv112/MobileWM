@@ -1,14 +1,16 @@
 package com.wmapp.ui.splash.views
 
-import android.content.Intent
 import android.os.Bundle
 import com.wmapp.R
 import com.wmapp.common.AppConstants
 import com.wmapp.common.AppUtils
 import com.wmapp.ui.base.views.BaseActivity
-import com.wmapp.ui.home.views.HomeActivity
 import javax.inject.Inject
 
+/**
+ * Splash activity.
+ *
+ */
 class MainActivity : BaseActivity(){
 
     @Inject lateinit var mAppUtils : AppUtils

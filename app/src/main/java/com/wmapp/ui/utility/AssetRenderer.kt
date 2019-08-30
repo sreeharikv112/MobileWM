@@ -14,24 +14,21 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ui.IconGenerator
 import com.wmapp.R
-import java.util.ArrayList
+import java.util.*
 
-class AssetRenderer(var context:Context, var googleMap:GoogleMap,
-                    var clusterManager : ClusterManager<POIClusterItem>)
-    : DefaultClusterRenderer<POIClusterItem>(context,googleMap,clusterManager)
-{
+class AssetRenderer(
+    var context: Context, var googleMap: GoogleMap,
+    var clusterManager: ClusterManager<POIClusterItem>
+) : DefaultClusterRenderer<POIClusterItem>(context, googleMap, clusterManager) {
 
-    //----------------------  Class Variables -------------------------------//
     private var mIconGenerator: IconGenerator
     private var mClusterIconGenerator: IconGenerator
     private var mImageView: ImageView
     private var mClusterImageView: ImageView
     private var mDimension: Int
-    private var mContext: Context
+    private var mContext: Context = context
 
-    //----------------------  Constructor's  -----------------------------------//
-    init{
-        mContext = context
+    init {
         mIconGenerator = IconGenerator(mContext)
         mClusterIconGenerator = IconGenerator(mContext)
 
@@ -49,13 +46,9 @@ class AssetRenderer(var context:Context, var googleMap:GoogleMap,
         mIconGenerator.setContentView(mImageView)
     }
 
-    //--------------------------------  Methods  --------------------------------//
-
     /**
-     * Draw a single Item.
+     * Draw a single POI Item.
      * Set the info window to show the title.
-     * @param item Individual item
-     * @param markerOptions Marker option object
      */
     override fun onBeforeClusterItemRendered(item: POIClusterItem, markerOptions: MarkerOptions) {
         mImageView.setImageResource(item.getProfilePhoto())
@@ -64,9 +57,7 @@ class AssetRenderer(var context:Context, var googleMap:GoogleMap,
     }
 
     /**
-     * Draw multiple Items.
-     * @param cluster Cluster object
-     * @param markerOptions Marker option object
+     * Draw multiple POI Items.
      */
     override fun onBeforeClusterRendered(
         cluster: Cluster<POIClusterItem>,

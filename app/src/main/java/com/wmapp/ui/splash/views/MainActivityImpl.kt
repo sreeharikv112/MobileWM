@@ -8,7 +8,11 @@ import com.wmapp.common.AppConstants
 import com.wmapp.common.AppUtils
 import com.wmapp.ui.home.views.HomeActivity
 
-
+/**
+ * Splash activity helper.
+ * Checks for network connectivity.
+ * Navigates to home screen.
+ */
 class MainActivityImpl(var context: MainActivity, var appUtils: AppUtils)  {
 
     private var mDelay : Long = 1000
@@ -22,9 +26,12 @@ class MainActivityImpl(var context: MainActivity, var appUtils: AppUtils)  {
         },mDelay)
     }
 
+    /**
+     * Verifies network.
+     * starts new activity.
+     */
     private fun checkNetwork(){
         if(appUtils.isNetworkConnected()){
-
             context.startActivity(Intent(context, HomeActivity::class.java))
             context.finish()
         }else{
@@ -32,6 +39,9 @@ class MainActivityImpl(var context: MainActivity, var appUtils: AppUtils)  {
         }
     }
 
+    /**
+     * Show alert dialog for network trial.
+     */
     private fun showAlertDialog(){
         context.showAlert(
             R.string.lost_connection, R.string.retry, R.string.cancel,
