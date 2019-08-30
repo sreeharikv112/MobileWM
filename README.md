@@ -8,6 +8,6 @@
 2. Which things could be done better, than you’ve done it<br>
 
    - Location retrieval can be done with service as well. <br>
-   - Application supports from API 16. But as device was not available with API 16, testing with device was not an option. Eventhough testing was done with Pie and Lolipop version. <br>
+   - Application supports from API 16. But as device was not available with API 16, testing with device was not an option. Even though testing was done with Pie and Lollipop version. <br>
    
    
