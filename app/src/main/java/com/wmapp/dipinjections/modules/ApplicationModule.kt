@@ -7,6 +7,12 @@ import com.wmapp.dipinjections.customscope.ApplicationScope
 import dagger.Module
 import dagger.Provides
 
+/**
+ * Dagger app module .
+ * Capable of handling more modules depending on app logic.
+ * Currently has constants and utils only.
+ */
+
 @Module
 class ApplicationModule(var application: Application) {
 

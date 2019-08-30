@@ -1,6 +1,5 @@
 package com.wmapp.dipinjections.modules
 
-import android.content.Context
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.wmapp.BuildConfig
@@ -16,7 +15,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * Responsible for creating retrofit dependency.
+ * Can have more internal dependency such as authentication as well.
+ */
 @Module
 class NetworkModule{
 

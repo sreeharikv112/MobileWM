@@ -23,7 +23,7 @@ abstract class BaseActivity : AppCompatActivity(), AppLogger , AlertCallBack {
     fun getInjectionComponent(): InjectionSubComponent {
         check(!mIsInjectionComponentUsed) { "should not use Injection more than once!" }
         mIsInjectionComponentUsed = true
-        return (WMApplication).instance.getApplicationComponent().newInjectionComponent()
+        return (WMApplication).instance.getApplicationComponent()!!.newInjectionComponent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

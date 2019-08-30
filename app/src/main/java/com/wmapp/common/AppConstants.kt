@@ -1,5 +1,8 @@
 package com.wmapp.common
 
+/**
+ * Constant class for common functionality.
+ */
 class AppConstants {
     companion object {
         val AUTHORIZATION = "Bearer df7c313b47b7ef87c64c0f5f5cebd6086bbb0fa"

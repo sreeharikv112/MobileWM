@@ -6,10 +6,16 @@ import com.wmapp.dipinjections.components.DaggerApplicationComponent
 import com.wmapp.dipinjections.modules.ApplicationModule
 import com.wmapp.dipinjections.modules.NetworkModule
 
+/**
+ * Application class for WM Mobile.
+ * Handles creation of Dagger Main components.
+ * Handles dagger sub component with multiple dependencies
+ *
+ */
 class WMApplication : Application() {
 
     companion object {
-        lateinit var mApplicationComponent: ApplicationComponent
+        var mApplicationComponent: ApplicationComponent? = null
         lateinit var instance: WMApplication
     }
 
@@ -22,7 +28,7 @@ class WMApplication : Application() {
     /**
      * Returns dagger component
      */
-    fun getApplicationComponent():ApplicationComponent{
+    fun getApplicationComponent():ApplicationComponent?{
         if (mApplicationComponent == null) {
             initialiseDaggerComponent()
         }

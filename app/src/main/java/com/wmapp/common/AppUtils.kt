@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 class AppUtils(var context: Context) {
 
 
-
     /**
      * Checks for network
      */

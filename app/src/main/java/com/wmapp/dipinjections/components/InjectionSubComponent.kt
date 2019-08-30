@@ -5,6 +5,9 @@ import com.wmapp.ui.home.views.HomeActivity
 import com.wmapp.ui.splash.views.MainActivity
 import dagger.Subcomponent
 
+/**
+ * Dagger sub component with multiple dependencies.
+ */
 @Subcomponent
 interface InjectionSubComponent {
 
