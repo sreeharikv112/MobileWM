@@ -60,6 +60,9 @@ class CarDetailsImpl(
         retrieveData()
     }
 
+    /**
+     * Gets details of car based on ID passed.
+     */
     private fun retrieveData() {
         context.logD(mTag, "retrieveData")
         mCarsDetailVM!!.getCarDetails(carId, mNetwork).observe(context, Observer { data ->
@@ -89,6 +92,9 @@ class CarDetailsImpl(
         })
     }
 
+    /**
+     * Books a selected car.
+     */
     private fun bookCar() {
         mProgressBar.visibility = View.VISIBLE
         context.logD(mTag, "retrieveData")
@@ -127,6 +133,9 @@ class CarDetailsImpl(
         })
     }
 
+    /**
+     * Renders car details in recycler view.
+     */
     private fun populateCarDetail(lisItem: ArrayList<CarDetailGridItem>, inputData: CarDetails) {
         lisItem.add(
             CarDetailGridItem(
@@ -206,6 +215,9 @@ class CarDetailsImpl(
         context.loadImageURL(context,mImageView,inputData.vehicleTypeImageUrl)
     }
 
+    /**
+     * Booking a car with button click handled.
+     */
     override fun onClick(v: View?) {
         if (v!!.id == R.id.btnQuickRent) {
             if (mIsDataLoaded && mCurrentCarID != -1) {

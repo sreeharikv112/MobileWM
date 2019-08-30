@@ -59,7 +59,6 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
 
         mCarsFeedVM!!.getCarsFeedData(mNetwork).observe(context, Observer {
                 data ->
-            //Set shared list data in Base
             when (data.dataStatus){
                 DataStatus.SUCCESS -> {
                     context.logD(mTag,"data ===  ${data.data!!}")
@@ -139,9 +138,7 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
         for (item in cluster!!.items) {
             builder.include(item.position)
         }
-        // Get the LatLngBounds
         val bounds = builder.build()
-        // Animate camera to the bounds
         try {
             mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
         } catch (e: Exception) {
