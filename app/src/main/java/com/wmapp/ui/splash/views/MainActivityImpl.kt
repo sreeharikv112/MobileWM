@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Handler
 import com.wmapp.R
+import com.wmapp.common.AppConstants
 import com.wmapp.common.AppUtils
 import com.wmapp.ui.home.views.HomeActivity
 
@@ -11,9 +12,10 @@ import com.wmapp.ui.home.views.HomeActivity
 class MainActivityImpl(var context: MainActivity, var appUtils: AppUtils)  {
 
     private var mDelay : Long = 1000
-    private lateinit var mHandler : Handler
+    private var mHandler : Handler
 
     init {
+        AppConstants.LOCATION_PERMISSION_DENIED = false
         mHandler= Handler()
         mHandler.postDelayed({
             checkNetwork()

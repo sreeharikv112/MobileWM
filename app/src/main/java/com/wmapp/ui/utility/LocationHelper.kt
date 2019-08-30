@@ -87,7 +87,7 @@ class LocationHelper (var context: BaseActivity,var continueLoc: Boolean) : ILoc
             }
         }
         else{
-
+            AppConstants.LOCATION_PERMISSION_DENIED = true
             if(context is HomeActivity){
                 (context as HomeActivity).locaitonUpdationFailure(context.getString(R.string.permission_denied_condition))
             }
@@ -208,7 +208,7 @@ class LocationHelper (var context: BaseActivity,var continueLoc: Boolean) : ILoc
                 showPermissionDialog()
             },
             DialogInterface.OnClickListener { dialog, which ->
-
+                AppConstants.LOCATION_PERMISSION_DENIED = true
                 if(context is HomeActivity) {
                     (context as HomeActivity).locaitonUpdationFailure(context.getString(R.string.permission_denied_condition))
                 }

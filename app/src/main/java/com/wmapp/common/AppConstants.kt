@@ -8,7 +8,8 @@ class AppConstants {
         val REQUEST_CHECK_SETTINGS = 0x1
         val CARID = "CARID"
         val BOOK_URL = "https://4i96gtjfia.execute-api.eu-central-1.amazonaws.com/default/wunderfleet-recruiting-mobile-dev-quick-rental"
-
+        var LOCATION_PERMISSION_DENIED = false
     }
+
 
 }

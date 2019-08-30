@@ -63,6 +63,7 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
 
     override fun onStart() {
         super.onStart()
+        if(!AppConstants.LOCATION_PERMISSION_DENIED)
         mLocationListener.actionStart()
     }
 
@@ -78,6 +79,7 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
 
     override fun locaitonUpdationFailure(message: String) {
         showToast(getString(R.string.failed_to_update_location))
+        if(!AppConstants.LOCATION_PERMISSION_DENIED)
         logD(mTag, "!! locaitonUpdationFailure !!")
     }
 
