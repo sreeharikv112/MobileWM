@@ -34,5 +34,6 @@
     <string name="is_clean">Is Clean</string>
     <string name="is_damaged">Is Damaged</string>
     <string name="available_car_image">Available Car image</string>
+    <string name="car_booked_simulation">Car Booked Simulation !</string>
 
 </resources>

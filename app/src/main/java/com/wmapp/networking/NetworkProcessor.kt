@@ -31,7 +31,8 @@ class NetworkProcessor(var networkService: NetworkService) {
                 CAR_FEED_REQ ->
                     response = networkService.getAllCarsFeed()
                 CAR_DETAILS_REQ ->
-                    response = networkService.getCarsDetails(carID)
+                    //response = networkService.getCarsDetails(carID)
+                    response = networkService.getCarsDetails()
                 CAR_BOOK_REQ ->
                     response = networkService.bookCarRequest(
                         AppConstants.BOOK_URL,

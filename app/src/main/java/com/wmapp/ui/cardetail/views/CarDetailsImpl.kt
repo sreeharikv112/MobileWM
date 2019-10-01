@@ -222,7 +222,11 @@ class CarDetailsImpl(
         if (v!!.id == R.id.btnQuickRent) {
             if (mIsDataLoaded && mCurrentCarID != -1) {
                 if(appUtils.isNetworkConnected()) {
-                    bookCar()
+
+                    context.showToast(context.getString(R.string.car_booked_simulation))
+                    //Commented out the implementation for now
+                    //bookCar()
+
                 }else{
                     context.showToast(context.getString(R.string.lost_connection))
                 }
