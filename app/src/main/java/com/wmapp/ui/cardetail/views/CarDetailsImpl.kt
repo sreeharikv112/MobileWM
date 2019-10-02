@@ -14,6 +14,7 @@ import com.wmapp.R
 import com.wmapp.common.AppUtils
 import com.wmapp.networking.DataStatus
 import com.wmapp.networking.NetworkProcessor
+import com.wmapp.ui.base.viewmodels.GenericVMFactory
 import com.wmapp.ui.cardetail.models.BookedResponse
 import com.wmapp.ui.cardetail.models.CarDetailGridItem
 import com.wmapp.ui.cardetail.models.CarDetails
@@ -37,7 +38,6 @@ class CarDetailsImpl(
     private val mProgressBar: ContentLoadingProgressBar
     private var mRecyclerView: RecyclerView
     private var mCardDetailAdapter: CarDetailAdapter
-    private var mCarDetailVM: CarDetailViewModel
     private var mBookButton: MaterialButton
     var mImageView: ImageView
     var mIsDataLoaded = false
@@ -45,7 +45,9 @@ class CarDetailsImpl(
 
     init {
         context.logD(mTag, "CarDetailsImpl init")
-        mCarsDetailVM = ViewModelProviders.of(context).get(CarDetailViewModel::class.java)
+
+        var array = arrayOf(context,mNetwork,carId,appUtils)
+        mCarsDetailVM = ViewModelProviders.of(context , GenericVMFactory(context.application,array)).get(CarDetailViewModel::class.java)
         mImageView = context.findViewById(R.id.carImageView)
         mProgressBar = context.findViewById(R.id.progressBar)
         mProgressBar.visibility = View.VISIBLE
@@ -55,7 +57,6 @@ class CarDetailsImpl(
         mRecyclerView.layoutManager = LinearLayoutManager(context)
         mCardDetailAdapter = CarDetailAdapter(context, ArrayList())
         mRecyclerView.adapter = mCardDetailAdapter
-        mCarDetailVM = ViewModelProviders.of(context).get(CarDetailViewModel::class.java)
 
         retrieveData()
     }
