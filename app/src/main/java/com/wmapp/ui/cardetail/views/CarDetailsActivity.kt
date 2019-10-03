@@ -2,6 +2,7 @@ package com.wmapp.ui.cardetail.views
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -45,6 +46,7 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
     private var mCarsDetailVM: CarDetailViewModel? = null
     lateinit var mProgressBar: ContentLoadingProgressBar
     lateinit var mCardDetailAdapter: CarDetailAdapter
+    lateinit var mCarImageView : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getInjectionComponent().inject(this)
@@ -54,6 +56,7 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
         supportActionBar!!.title = getString(R.string.car_detail)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         mProgressBar = findViewById(R.id.progressBar)
+        mCarImageView = findViewById(R.id.carImageView)
         try {
             mCarID = intent.getIntExtra(CARID, -1)
         } catch (e: Exception) {
@@ -93,7 +96,30 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
                         mBookButton.visibility = View.VISIBLE
                         mBookButton.setOnClickListener(this)
                         mIsDataLoaded=true
-                        mCarsDetailVM!!.populateCarDetail(this,mCardDetailAdapter,lisItem, inputData)
+
+                        var mutableList = mutableListOf<String>()
+                        mutableList.add(getString(R.string.title))
+                        mutableList.add(getString(R.string.licence_plate))
+                        mutableList.add(getString(R.string.vehicle_state_id))
+                        mutableList.add(getString(R.string.hardware_id))
+                        mutableList.add(getString(R.string.pricing_time))
+                        mutableList.add(getString(R.string.pricing_parking))
+                        mutableList.add(getString(R.string.address))
+                        mutableList.add(getString(R.string.zipcode))
+                        mutableList.add(getString(R.string.city))
+                        mutableList.add(getString(R.string.address))
+                        mutableList.add(getString(R.string.reservation_state))
+                        mutableList.add(getString(R.string.damage_desc))
+                        mutableList.add(getString(R.string.is_clean))
+                        mutableList.add(getString(R.string.is_damaged))
+                        mutableList.add(getString(R.string.is_actiated_by_hardware))
+
+
+                        mCarsDetailVM!!.populateCarDetail(mutableList,mCardDetailAdapter,lisItem, inputData)
+
+                        //Load image to holder
+                        loadImageURL(this,mCarImageView,inputData.vehicleTypeImageUrl)
+
                     } catch (e: Exception) {
                         showToast(getString(R.string.sorry_car_not_found))
                         logE(mTag, "initiateDataProcess Exception ${e.toString()}")

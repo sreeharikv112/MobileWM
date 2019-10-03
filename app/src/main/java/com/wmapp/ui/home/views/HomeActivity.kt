@@ -57,6 +57,7 @@ class HomeActivity : BaseActivity(), ILocationReceivedListener, OnMapReadyCallba
     }
 
     override fun initiateDataProcess() {
+
         mHomeActivityImpl = HomeActivityImpl(this, mNetwork,mAppUtils)
         try {
             MapsInitializer.initialize(application)

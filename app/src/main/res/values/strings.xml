@@ -9,6 +9,9 @@
     <string name="done">Done</string>
     <string name="lost_connection">Network is Unavailable!</string>
     <string name="data_processing_error">Unable to process data</string>
+    <string name="title">Title</string>
+    <string name="reservation_state">Reservation State</string>
+    <string name="is_actiated_by_hardware">Is Activated By Hardware</string>
 
     <string name="google_map_api">AIzaSyAvndcGUfk4omCdPgGIZoZV9-b-LoBYYPI</string>
     <string name="ok">Ok</string>
