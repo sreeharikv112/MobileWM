@@ -17,6 +17,7 @@ import com.wmapp.common.AppConstants
 import com.wmapp.common.AppUtils
 import com.wmapp.networking.DataStatus
 import com.wmapp.networking.NetworkProcessor
+import com.wmapp.ui.base.viewmodels.GenericVMFactory
 import com.wmapp.ui.cardetail.views.CarDetailsActivity
 import com.wmapp.ui.home.models.CarsFeed
 import com.wmapp.ui.home.viewmodels.CarsFeedViewModel
@@ -47,8 +48,13 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
 
     init {
         context.logD(mTag,"init")
-        mCarsFeedVM = ViewModelProviders.of(context).get(CarsFeedViewModel::class.java)
+
+        var array = arrayOf(mNetwork,appUtils)
+
+        mCarsFeedVM = ViewModelProviders.of(context, GenericVMFactory(array)).get(CarsFeedViewModel::class.java)
+        //ViewModelProviders.of(this , GenericVMFactory(array)).get(CarDetailViewModel::class.java)
         retrieveData()
+
     }
 
     /**
@@ -57,7 +63,7 @@ class HomeActivityImpl (var context : HomeActivity,var mNetwork : NetworkProcess
      */
     private fun retrieveData() {
 
-        mCarsFeedVM!!.getCarsFeedData(mNetwork).observe(context, Observer {
+        mCarsFeedVM!!.getCarsFeedData().observe(context, Observer {
                 data ->
             when (data.dataStatus){
                 DataStatus.SUCCESS -> {
