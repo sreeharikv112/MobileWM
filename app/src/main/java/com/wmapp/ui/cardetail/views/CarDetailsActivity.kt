@@ -37,16 +37,14 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
     lateinit var mAppUtils: AppUtils
     @Inject
     lateinit var mNetwork: NetworkProcessor
-    val mTag = CarDetailsActivity::class.java.simpleName
-    lateinit var mCarDetailsImpl: CarDetailsImpl
-    private var mCarsDetailVM: CarDetailViewModel? = null
-    var mCarID = -1
-    lateinit var mProgressBar: ContentLoadingProgressBar
-    lateinit var mRecyclerView: RecyclerView
-    lateinit var mCardDetailAdapter: CarDetailAdapter
-    lateinit var mBookButton: MaterialButton
     private var mIsDataLoaded = false
-
+    var mCarID = -1
+    lateinit var mBookButton: MaterialButton
+    lateinit var mRecyclerView: RecyclerView
+    private val mTag = CarDetailsActivity::class.java.simpleName
+    private var mCarsDetailVM: CarDetailViewModel? = null
+    lateinit var mProgressBar: ContentLoadingProgressBar
+    lateinit var mCardDetailAdapter: CarDetailAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getInjectionComponent().inject(this)
@@ -58,9 +56,8 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
         mProgressBar = findViewById(R.id.progressBar)
         try {
             mCarID = intent.getIntExtra(CARID, -1)
-            logD(mTag, "CARID === ${intent.getIntExtra("CARID", -1)}")
         } catch (e: Exception) {
-            logE(mTag, "onCreate EX == $e")
+            logE(mTag, "onCreate Exception == $e")
         }
 
         setupRecyclerView()
@@ -72,7 +69,6 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         mCardDetailAdapter = CarDetailAdapter(this, ArrayList())
         mRecyclerView.adapter = mCardDetailAdapter
-
         mBookButton = findViewById(R.id.btnQuickRent)
         mBookButton.visibility = View.INVISIBLE
 
@@ -80,11 +76,13 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
     }
 
     override fun initiateDataProcess() {
-        var array = arrayOf(this,mNetwork,mCarID,mAppUtils)
-        mCarsDetailVM = ViewModelProviders.of(this , GenericVMFactory(application,array)).get(CarDetailViewModel::class.java)
+
+        var array = arrayOf(mNetwork,mAppUtils,mCarID)
+
+        mCarsDetailVM = ViewModelProviders.of(this , GenericVMFactory(array)).get(CarDetailViewModel::class.java)
 
         //Listen to list updates.
-        mCarsDetailVM!!.getCarDetails(mCarID, mNetwork).observe(this, Observer { data ->
+        mCarsDetailVM!!.getCarDetails().observe(this, Observer { data ->
             mProgressBar.visibility = View.INVISIBLE
             when (data.dataStatus) {
                 DataStatus.SUCCESS -> {
@@ -97,8 +95,8 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
                         mIsDataLoaded=true
                         mCarsDetailVM!!.populateCarDetail(this,mCardDetailAdapter,lisItem, inputData)
                     } catch (e: Exception) {
-                        showToast("Sorry! Not able to find details of car")
-                        logE(mTag, "initiateDataProcess EX === ${e.toString()}")
+                        showToast(getString(R.string.sorry_car_not_found))
+                        logE(mTag, "initiateDataProcess Exception ${e.toString()}")
                     }
                 }
                 DataStatus.NETWORK_ERROR -> {
@@ -119,7 +117,6 @@ class CarDetailsActivity : BaseActivity(),View.OnClickListener{
                 if(mAppUtils.isNetworkConnected()) {
                     showToast(getString(R.string.car_booked_simulation))
                     //Commented out the implementation for now
-                    //bookCar()
 
                 }else{
                     showToast(getString(R.string.lost_connection))

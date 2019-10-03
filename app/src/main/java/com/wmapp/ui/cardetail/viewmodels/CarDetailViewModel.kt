@@ -26,42 +26,35 @@ import com.wmapp.ui.utility.CarDetailAdapter
  * View model for car details screen.
  */
 class CarDetailViewModel(
-    val mContext: CarDetailsActivity,
-    val mNetwork: NetworkProcessor,
-    val carId: Int,
-    val appUtils: AppUtils
+    val mNetworkProcessor: NetworkProcessor,
+    val appUtils: AppUtils,
+    val carId: Int
 
 ) : ViewModel() {
 
     var mCarDetailResponse: CommonLiveData<CarDetails>? = null
     var mBookedResponse: CommonLiveData<BookedResponse>? = null
     lateinit var mImageView: ImageView
-    val mTag = CarDetailViewModel::class.java.simpleName
 
-    init {
-
-    }
     /**
      * Retrieves response from api for specific car.
      */
-    fun getCarDetails(carId: Int, networkProcessor: NetworkProcessor): CommonLiveData<CarDetails> {
+    fun getCarDetails(): CommonLiveData<CarDetails> {
         if (null == mCarDetailResponse) {
-            mCarDetailResponse = networkProcessor.getGenericRemoteData(CAR_DETAILS_REQ, carId, null)
+            mCarDetailResponse = mNetworkProcessor.getGenericRemoteData(CAR_DETAILS_REQ, carId, null)
                     as CommonLiveData<CarDetails>
         }
         return mCarDetailResponse as CommonLiveData<CarDetails>
     }
 
     /**
-     * Makes booking request with specific car
+     * Makes booking request with specific car.
+     * Commented out for now. Will show only toast message to user.
      */
-    fun bookCarDetails(
-        carId: Int,
-        networkProcessor: NetworkProcessor
-    ): CommonLiveData<BookedResponse> {
+    fun bookCarDetails(): CommonLiveData<BookedResponse> {
         if (null == mBookedResponse) {
             val bookCar = BookCar(carId)
-            mBookedResponse = networkProcessor.getGenericRemoteData(CAR_BOOK_REQ, -1, bookCar)
+            mBookedResponse = mNetworkProcessor.getGenericRemoteData(CAR_BOOK_REQ, -1, bookCar)
                     as CommonLiveData<BookedResponse>
         }
         return mBookedResponse as CommonLiveData<BookedResponse>
